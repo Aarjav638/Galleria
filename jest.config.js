@@ -11,5 +11,4 @@ module.exports = {
   moduleNameMapper: {
     '\\.(png|jpg|jpeg|svg)$': '<rootDir>/__mocks__/fileMock.js', // Mock static file imports like images
   },
-  setupFiles: ['<rootDir>/jest.setup.js'], // Optional: For any additional setup
 };
