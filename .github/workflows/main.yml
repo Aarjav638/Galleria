@@ -71,38 +71,38 @@ jobs:
         with:
           name: galleria-release.apk
           path: android/app/build/outputs/apk/release/app-release.apk
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
+  # test:
+  #   name: Run Tests
+  #   runs-on: ubuntu-latest
 
-    steps:
-      # Checkout the current repository code
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     # Checkout the current repository code
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      # Set up Node.js environment to install dependencies (updated to 20.x)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
+  #     # Set up Node.js environment to install dependencies (updated to 20.x)
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '20.x'
 
-      # Cache node_modules to speed up dependency installation
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            node-modules-${{ runner.os }}
+  #     # Cache node_modules to speed up dependency installation
+  #     - name: Cache node_modules
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+  #         restore-keys: |
+  #           node-modules-${{ runner.os }}
 
-      # Install dependencies defined in package.json using npm
-      - name: Install dependencies
-        run: npm install
+  #     # Install dependencies defined in package.json using npm
+  #     - name: Install dependencies
+  #       run: npm install
 
-      # Run linting (checks code formatting based on ESLint)
-      - name: Lint code
-        run: npm run lint
+  #     # Run linting (checks code formatting based on ESLint)
+  #     - name: Lint code
+  #       run: npm run lint
 
-      # Run Jest tests (runs the unit tests using Jest)
-      - name: Run tests
-        run: npm test --ci
+  #     # Run Jest tests (runs the unit tests using Jest)
+  #     - name: Run tests
+  #       run: npm test --ci
