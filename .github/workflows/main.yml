@@ -71,57 +71,6 @@ jobs:
         with:
           name: galleria-release.apk
           path: android/app/build/outputs/apk/release/app-release.apk
-
-  build-ios:
-    name: Build iOS
-    runs-on: macos-latest
-
-    steps:
-      # Checkout the current repository code
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Set up Node.js environment to install dependencies (updated to 20.x)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-
-      # Cache node_modules to speed up dependency installation
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            node-modules-${{ runner.os }}
-
-      # Install dependencies defined in package.json using npm
-      - name: Install dependencies
-        run: npm install
-
-      # Install CocoaPods for iOS dependencies
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install
-
-      # Build iOS App (with updated scheme and workspace name to match your app name)
-      - name: Build iOS
-        run: |
-          xcodebuild -workspace ios/galleria.xcworkspace \
-          -scheme galleria \
-          -sdk iphoneos \
-          -configuration Release \
-          -derivedDataPath ios/build
-
-      # Upload the generated IPA as an artifact (optional)
-      - name: Upload IPA
-        uses: actions/upload-artifact@v3
-        with:
-          name: galleria-release.ipa
-          path: ios/build/Build/Products/Release-iphoneos/galleria.app
-
   test:
     name: Run Tests
     runs-on: ubuntu-latest
