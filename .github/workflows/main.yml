@@ -37,6 +37,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Set permissions for gradlew before version bumping or building
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
       # Step to bump the version (e.g., patch bump)
       - name: Bump version
         run: npm version patch --no-git-tag-version
@@ -69,23 +73,11 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}
 
-      # Ensure Gradle Wrapper is present and install Gradle if needed
-      - name: Ensure Gradle Wrapper is present
-        run: |
-          if [ ! -f android/gradlew ]; then
-            echo "Gradle wrapper not found!"
-            exit 1
-          fi
-
-      # Give Gradlew executable permissions
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
-
-      # Build Android APK (run using bash explicitly)
+      # Build Android APK (the default task that builds the release APK)
       - name: Build Android
         run: |
           cd android
-          bash ./gradlew assembleRelease
+          ./gradlew assembleRelease
 
       # Upload the generated APK as an artifact (optional)
       - name: Upload APK
