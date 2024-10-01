@@ -55,6 +55,8 @@ jobs:
       # Commit and push the version bump using GITHUB_TOKEN for authentication
       - name: Commit and push version bump
         run: |
+          git config --global user.email "anshjain638@gmail.com"
+          git config --global user.name "Aarjav Jain"
           git add package.json
           git commit -m "chore: bump version"
           git push
