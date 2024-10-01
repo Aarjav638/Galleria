@@ -69,15 +69,23 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}
 
+      # Ensure Gradle Wrapper is present and install Gradle if needed
+      - name: Ensure Gradle Wrapper is present
+        run: |
+          if [ ! -f android/gradlew ]; then
+            echo "Gradle wrapper not found!"
+            exit 1
+          fi
+
       # Give Gradlew executable permissions
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      # Build Android APK (the default task that builds the release APK)
+      # Build Android APK (run using bash explicitly)
       - name: Build Android
         run: |
           cd android
-          ./gradlew assembleRelease
+          bash ./gradlew assembleRelease
 
       # Upload the generated APK as an artifact (optional)
       - name: Upload APK
