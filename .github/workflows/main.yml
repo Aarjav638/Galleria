@@ -14,17 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the current repository code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up Node.js environment to install dependencies (updated to 20.x)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      # Cache node_modules to speed up dependency installation
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -33,18 +30,27 @@ jobs:
           restore-keys: |
             node-modules-${{ runner.os }}
 
-      # Install dependencies defined in package.json using npm
       - name: Install dependencies
         run: npm install
 
-      # Set up JDK for Android (updated to Java 20)
+      - name: Bump version
+        run: npm version patch --no-git-tag-version
+
+      - name: Commit and push version bump
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'actions@github.com'
+          git add package.json
+          git commit -m "chore: bump version"
+          git push
+
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '20'
 
-      # Cache Gradle to speed up the build process
       - name: Cache Gradle files
         uses: actions/cache@v3
         with:
@@ -55,54 +61,16 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}
 
-      # Give Gradlew executable permissions
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      # Build Android APK (the default task that builds the release APK)
       - name: Build Android
         run: |
           cd android
           ./gradlew assembleRelease
 
-      # Upload the generated APK as an artifact (optional)
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: galleria-release.apk
           path: android/app/build/outputs/apk/release/app-release.apk
-  # test:
-  #   name: Run Tests
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     # Checkout the current repository code
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
-
-  #     # Set up Node.js environment to install dependencies (updated to 20.x)
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '20.x'
-
-  #     # Cache node_modules to speed up dependency installation
-  #     - name: Cache node_modules
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-  #         restore-keys: |
-  #           node-modules-${{ runner.os }}
-
-  #     # Install dependencies defined in package.json using npm
-  #     - name: Install dependencies
-  #       run: npm install
-
-  #     # Run linting (checks code formatting based on ESLint)
-  #     - name: Lint code
-  #       run: npm run lint
-
-  #     # Run Jest tests (runs the unit tests using Jest)
-  #     - name: Run tests
-  #       run: npm test --ci

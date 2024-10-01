@@ -1,13 +1,16 @@
 {
   "name": "galleria",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postversion": "cd android && gradlew bundleRelease",
+    "prebuild": "npm version patch --no-git-tag-version",
+    "build": "yarn prebuild && yarn run android"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.0.0",
