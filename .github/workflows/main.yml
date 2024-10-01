@@ -42,7 +42,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '17'  # Use Java 17
+          java-version: '17'
 
       # Set permissions for gradlew before version bumping or building
       - name: Make gradlew executable
@@ -52,15 +52,16 @@ jobs:
       - name: Bump version
         run: npm version patch --no-git-tag-version
 
-      # Commit the version bump (optional: only if on the main branch)
+      # Commit and push the version bump using GITHUB_TOKEN for authentication
       - name: Commit and push version bump
-        if: github.ref == 'refs/heads/main'
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'actions@github.com'
           git add package.json
           git commit -m "chore: bump version"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
 
       # Cache Gradle to speed up the build process
       - name: Cache Gradle files
